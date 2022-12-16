@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
 
     res.status(200).json(tagData)
 
-  } catch (err) { res.status(400).json(err) }
+  } catch (err) { res.status(200).json(err) }
 
 });
 
@@ -73,7 +73,7 @@ router.put('/:id', async (req, res) => {
 
     res.status(200).json(updatedTagProds)
 
-  } catch (err) { res.status(400).json(err) }
+  } catch (err) { res.status(200).json(err) }
 
 });
 // DELETE TAG BY IT'S ID

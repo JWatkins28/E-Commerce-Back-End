@@ -44,7 +44,7 @@ router.post('/', async (req, res) => {
 
 });
 
-// UPDATE ROUTE BY 'ID'
+// UPDATE CATEGORY BY 'ID'
 router.put('/:id', async (req, res) => {
 
   try {
@@ -81,7 +81,7 @@ router.put('/:id', async (req, res) => {
 
 });
 
-// DELETE BY 'ID'
+// DELETE CATEGORY BY 'ID'
 router.delete('/:id', async (req, res) => {
 
   try {
