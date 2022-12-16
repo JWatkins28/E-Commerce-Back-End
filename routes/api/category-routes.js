@@ -1,11 +1,11 @@
 const router = require('express').Router();
 const { Category, Product, ProductTag } = require('../../models');
 
-// The `/api/categories` endpoint
+// API/CATEGORES ENDPOINT
 
+// GET ALL CATEGORIES
 router.get('/', async (req, res) => {
-  // find all categories
-  // be sure to include its associated Products
+
   try {
 
     const categoryData = await Category.findAll({ include: [{ model: Product }] });
@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
 
 });
 
+// FIND CATEGORY BY 'ID'
 router.get('/:id', async (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
+
   try {
 
     const categoryData = await Category.findByPk(req.params.id, { include: [{ model: Product }] });
@@ -31,8 +31,9 @@ router.get('/:id', async (req, res) => {
 
 });
 
+// CREATE A NEW CATEGORY
 router.post('/', async (req, res) => {
-  // create a new category
+
   try {
 
     const categoryData = await Category.create(req.body);
@@ -43,44 +44,46 @@ router.post('/', async (req, res) => {
 
 });
 
-// UPDATE ROUTE
+// UPDATE ROUTE BY 'ID'
 router.put('/:id', async (req, res) => {
 
   try {
 
-    // update a category by its `id` value
+    // UPDATE THE CATEGORY
     await Category.update(req.body, { where: { id: req.params.id } });
 
-    // find all associated products
+    // FIND ATTACHED PRODUCTS
     const categoryProds = await Product.findAll({ where: { category_id: req.params.id } });
 
-    // get list of all the product ids
+    // GET LIST OF ALL PRODUCT IDs
     const categoryProdIds = await categoryProds.map(({ id }) => id);
 
-    // create filtered list of new category_ids
+    // CREATE FILTERED LIST OF NEW CATEGORY_IDs
     const newCategoryProds = await req.body.id
       .filter((id) => !categoryProdIds.includes(id))
       .map((id) => { return { id } })
 
-    // figure out which ones to remove
+    // FIGURING OUT WHICH ONES TO REMOVE
     const categoryProdsToRemove = await categoryProds
       .filter(({ category_id }) => !req.body.id.includes(category_id))
       .map(({ id }) => id);
 
-    // run both actions
+    // EXECUTE BOTH ACTIONS
     const updatedCategoryProds = await Promise.all([
       Product.destroy({ where: { id: categoryProdsToRemove } }),
       Product.bulkCreate(newCategoryProds),
     ]);
 
+    // RETURN THE RESULT
     return res.json(updatedCategoryProds)
 
   } catch (err) { res.status(400).json(err) }
 
 });
 
+// DELETE BY 'ID'
 router.delete('/:id', async (req, res) => {
-  // delete a category by its `id` value
+
   try {
 
     const categoryData = await Category.destroy({ where: { id: req.params.id } });
